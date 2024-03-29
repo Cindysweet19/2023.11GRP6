@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
 import { CategoriesData } from '../Data/CategoriesData';
@@ -8,8 +8,23 @@ import { Link } from 'react-router-dom';
 function CategoriesSlides() {
   const [prevEl, setPrevEl] = useState(null);
   const [nextEl, setNextEl] = useState(null);
+  const [data, setData] = useState([]);
   const classNames =
     'hover:bg-subMain transitions hover:text-white rounded text-xs w-8 h-8 flex-colo bg-main text-white shadow-xl';
+
+  async function fetchData() {
+    try {
+      const result = await CategoriesData();
+      console.log(result)
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="sm:mt-10 mt-5">
@@ -41,22 +56,24 @@ function CategoriesSlides() {
           },
         }}
       >
-        {CategoriesData.map((f) => (
+        {data.map((f) => (
+          f.subCategorias.map((e, index) => (
           <SwiperSlide key={f._id} className="hover:scale-90 transitions">
             <Link
-              to={`/category/${f.title}`}
+              to={`/category/${f.nombreCategoria}`}
               className="p-2 bg-deepGray rounded-md flex-colo font-semibold text-xs gap-2"
             >
               <div className="p-2 shadow-md w-12 h-12 rounded-full bg-white">
                 <img
                   alt={f.title}
-                  src={`/images/${f.icon}`}
+                  src={`/images/categories/${e.imagenNombre}`}
                   className="w-full h-full"
                 />
               </div>
-              <p>{f.title}</p>
+              <p>{e.nombreSubCategoria}</p>
             </Link>
           </SwiperSlide>
+          ))
         ))}
         <div className="w-full z-50 absolute top-1/4 justify-between flex">
           <button className={classNames} ref={(node) => setPrevEl(node)}>

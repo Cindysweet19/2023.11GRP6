@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect  } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { NavLink, Link } from 'react-router-dom';
 import MainDrawer from './MainDrawer';
@@ -9,6 +9,7 @@ import { MdSecurity } from 'react-icons/md';
 import { BsFileEarmarkMedical } from 'react-icons/bs';
 
 function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
+  const [data, setData] = useState([]);
   const active = ' bg-deepGray';
   const inActive =
     'flex sm:gap-8 gap-4 hover:bg-deepGray items-center py-4 rounded sm:px-8 px-4 text-sm';
@@ -41,6 +42,20 @@ function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
       icon: BsFileEarmarkMedical,
     },
   ];
+
+  async function fetchData() {
+    try {
+      const result = await CategoriesData();
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <MainDrawer DrawerOpen={mobileDrawerOpen} closeDrawer={toggleMobileDrawer}>
       <div className="flex flex-col w-full h-full justify-between items-middle bg-white rounded cursor-pointer">
@@ -67,7 +82,7 @@ function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
         <div className="overflow-y-scroll flex-grow scrollbar-hide w-full max-h-full">
           <div className="flex flex-col gap-10">
             <div className="grid grid-cols-2">
-              {CategoriesData.map((c) => (
+              {data.map((c) => (
                 <NavLink
                   onClick={toggleMobileDrawer}
                   to={`/category/${c.title}`}

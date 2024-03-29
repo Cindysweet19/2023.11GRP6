@@ -1,8 +1,8 @@
-const Usuario = require('../models/usuario')
+const Categoria = require('../models/categoria')
 
 exports.create = (req, res) => {
-    const usuario = req.body;
-    Usuario.create(usuario)
+    const categoria = req.body;
+    Categoria.create(categoria)
             .then(data => {
                 res.send(data);
             })
@@ -16,14 +16,14 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    Usuario.find()
+    Categoria.find()
             .then(data => {
                 res.send(data);
             })
             .catch(err => {
                 res.status(500).send({
                     message:
-                        err.message || "Some error occurred while creating the User."
+                        err.message || "Some error occurred while creating the Category."
                 });
             });
 };
